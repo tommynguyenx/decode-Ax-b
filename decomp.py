@@ -38,9 +38,6 @@ class QR:
         self.A = A
         self.m, self.n = A.shape
 
-    def project(self, u, a):
-        return (np.dot(u, a) / np.dot(u, u)) * u
-
     def decomposeGS(self):
         A = np.copy(self.A).astype(float)
         Q = np.zeros((self.m, self.n))
@@ -50,7 +47,7 @@ class QR:
             u = A[:, j]
             for i in range(j):
                 R[i, j] = np.dot(Q[:, i], A[:, j])
-                u -= self.project(Q[:, i], A[:, j])
+                u -= np.dot(R[i, j], Q[:, i])
 
             R[j, j] = np.linalg.norm(u)
             if R[j, j] == 0:
@@ -61,21 +58,19 @@ class QR:
         return Q, R
     
     def decomposeMGS(self):
-        A = np.copy(self.A).astype(float)
+        A = np.copy(self.A).astype(float) # as to not overwrite the original A
         Q = np.zeros((self.m, self.n))
         R = np.zeros((self.n, self.n))
-
+        
         for j in range(self.n):
-            u = A[:, j]
-            for i in range(j):
-                R[i, j] = np.dot(Q[:, i], u)
-                u -= self.project(Q[:, i], u)
-
-            R[j, j] = np.linalg.norm(u)
+            u_j = A[:, j]
+            R[j, j] = np.linalg.norm(u_j)
             if R[j, j] == 0:
                 raise ValueError("Matrix is not full rank.")
-            
-            Q[:, j] = u / R[j, j]
-        
+            Q[:, j] = u_j / R[j, j]
+            for k in range(j+1, self.n):
+                R[j, k] = np.dot(Q[:, j], A[:, k]) 
+                A[:, k] -= R[j, k] * Q[:, j] # store u_k inside A[:, k]
+                
         return Q, R
             

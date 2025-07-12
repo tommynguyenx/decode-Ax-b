@@ -8,6 +8,7 @@ def decompose_qr(A, method='mgs'):
     else: 
         raise ValueError("Specified method not supported and/or invalid.")
 
+
 def decompose_qr_gs(A):
     A = A.copy().astype(float) 
     m, n = A.shape

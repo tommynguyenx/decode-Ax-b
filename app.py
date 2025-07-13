@@ -22,39 +22,22 @@ else:
     )
     A = np.array(A_df, dtype=float)
 
+st.header("LU Decomposition Results")
 if validate_matrix_square(A):
-    st.write("**Matrix A:**")
-    latex_matrix_A = r"\begin{bmatrix}" + \
-        r" \\".join([" & ".join(map(str, row)) for row in A]) + \
-        r"\end{bmatrix}"
-    st.latex(latex_matrix_A)
 
     P, L, U = decompose_lu(A)
 
-    st.write("**Matrix P:**")
-    latex_matrix_P = r"\begin{bmatrix}" + \
-        r" \\".join([" & ".join(map(str, row)) for row in P]) + \
-        r"\end{bmatrix}"
-    st.latex(latex_matrix_P)
+    def latex_matrix(name, matrix, decimals=3):
+        return f"{name} = " + r"\begin{bmatrix}" + \
+            r" \\".join([" & ".join([f"{x:.{decimals}f}" for x in row]) for row in matrix]) + \
+            r"\end{bmatrix}"
 
-    st.write("**Matrix L:**")
-    latex_matrix_L = r"\begin{bmatrix}" + \
-        r" \\".join([" & ".join(map(str, row)) for row in L]) + \
-        r"\end{bmatrix}"
-    st.latex(latex_matrix_L)
-
-    st.write("**Matrix U:**")
-    latex_matrix_U = r"\begin{bmatrix}" + \
-        r" \\".join([" & ".join(map(str, row)) for row in U]) + \
-        r"\end{bmatrix}"
-    st.latex(latex_matrix_U)
-
-    st.write("**Reconstruction of A = P.T @ L @ U:**")
-    A_reconstructed = P.T @ L @ U
-    latex_matrix_re = r"\begin{bmatrix}" + \
-        r" \\".join([" & ".join(map(str, row)) for row in A_reconstructed]) + \
-        r"\end{bmatrix}"
-    st.latex(latex_matrix_re)
-
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.latex(latex_matrix("P", P, decimals=0))
+    with col2:
+        st.latex(latex_matrix("L", L))
+    with col3:
+        st.latex(latex_matrix("U", U))
 else: 
     st.error("Matrix A must be square for LU decomposition.")

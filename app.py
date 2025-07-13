@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 from decompositions import decompose_lu
 from solvers import forward_substituition, backward_substitution
+from utils import validate_matrix_square, validate_matrix_full_col_rank, validate_matrix_positive_definite
 
 st.title("Matrix Decomposition")
 
@@ -21,35 +22,39 @@ else:
     )
     A = np.array(A_df, dtype=float)
 
-st.write("**Matrix A:**")
-latex_matrix_A = r"\begin{bmatrix}" + \
-    r" \\".join([" & ".join(map(str, row)) for row in A]) + \
-    r"\end{bmatrix}"
-st.latex(latex_matrix_A)
+if validate_matrix_square(A):
+    st.write("**Matrix A:**")
+    latex_matrix_A = r"\begin{bmatrix}" + \
+        r" \\".join([" & ".join(map(str, row)) for row in A]) + \
+        r"\end{bmatrix}"
+    st.latex(latex_matrix_A)
 
-P, L, U = decompose_lu(A)
+    P, L, U = decompose_lu(A)
 
-st.write("**Matrix P:**")
-latex_matrix_P = r"\begin{bmatrix}" + \
-    r" \\".join([" & ".join(map(str, row)) for row in P]) + \
-    r"\end{bmatrix}"
-st.latex(latex_matrix_P)
+    st.write("**Matrix P:**")
+    latex_matrix_P = r"\begin{bmatrix}" + \
+        r" \\".join([" & ".join(map(str, row)) for row in P]) + \
+        r"\end{bmatrix}"
+    st.latex(latex_matrix_P)
 
-st.write("**Matrix L:**")
-latex_matrix_L = r"\begin{bmatrix}" + \
-    r" \\".join([" & ".join(map(str, row)) for row in L]) + \
-    r"\end{bmatrix}"
-st.latex(latex_matrix_L)
+    st.write("**Matrix L:**")
+    latex_matrix_L = r"\begin{bmatrix}" + \
+        r" \\".join([" & ".join(map(str, row)) for row in L]) + \
+        r"\end{bmatrix}"
+    st.latex(latex_matrix_L)
 
-st.write("**Matrix U:**")
-latex_matrix_U = r"\begin{bmatrix}" + \
-    r" \\".join([" & ".join(map(str, row)) for row in U]) + \
-    r"\end{bmatrix}"
-st.latex(latex_matrix_U)
+    st.write("**Matrix U:**")
+    latex_matrix_U = r"\begin{bmatrix}" + \
+        r" \\".join([" & ".join(map(str, row)) for row in U]) + \
+        r"\end{bmatrix}"
+    st.latex(latex_matrix_U)
 
-st.write("**Reconstruction of A = P.T @ L @ U:**")
-A_reconstructed = P.T @ L @ U
-latex_matrix_re = r"\begin{bmatrix}" + \
-    r" \\".join([" & ".join(map(str, row)) for row in A_reconstructed]) + \
-    r"\end{bmatrix}"
-st.latex(latex_matrix_re)
+    st.write("**Reconstruction of A = P.T @ L @ U:**")
+    A_reconstructed = P.T @ L @ U
+    latex_matrix_re = r"\begin{bmatrix}" + \
+        r" \\".join([" & ".join(map(str, row)) for row in A_reconstructed]) + \
+        r"\end{bmatrix}"
+    st.latex(latex_matrix_re)
+
+else: 
+    st.error("Matrix A must be square for LU decomposition.")

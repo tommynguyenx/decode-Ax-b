@@ -1,6 +1,6 @@
 import numpy as np
 
-def forward_substitution(U, b):
+def backward_substitution(U, b):
     """
     Solves Ux = b, where U is upper triangular with non-zero diagonal entries.
     """

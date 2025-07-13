@@ -1,7 +1,7 @@
 import numpy as np
 
 def decompose_lu(A): # partial pivoting
-    A = A.copy.astype(float)
+    A = A.copy().astype(float)
     n = len(A)
     perm = np.arange(n)
 

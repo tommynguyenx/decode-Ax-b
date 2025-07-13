@@ -1,6 +1,6 @@
 import numpy as np
 
-def decompose_LDL(A):
+def decompose_ldl(A):
     A = A.copy().astype(np.complex128)
     n = len(A)
     L = np.zeros((n, n), dtype=np.complex128)
